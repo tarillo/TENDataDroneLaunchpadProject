@@ -11,6 +11,7 @@
 #include <chrono>
 #include <iomanip>
 #include <algorithm>
+#include <ctime>
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
 #else
@@ -21,6 +22,7 @@
 #include <stdio.h>
 
 using namespace std;
+using namespace chrono;
 
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
@@ -73,7 +75,7 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-
+    
 	// variables initialization	
 	string inputData;
 	string filename;
@@ -84,7 +86,7 @@ int main() {
 	double p = 0.10;
 	
 	// process: files intake
-	cout << "Please input a filename: ";
+	cout << "Enter the name of file: ";
 	cin >> filename;
 
 	inFS.open(filename);
@@ -147,13 +149,49 @@ int main() {
 
 	// variable initialization
 	double distance = 0.0;
-	nearest_neighbor drone;
-	drone.load_data(filename); // re reads info 
-	distance = round(drone.nearest_neighbor_distance()*10)/10;
+	nearest_neighbor drone1;
+    nearest_neighbor drone2;
+    nearest_neighbor drone3;
+    nearest_neighbor drone4;
+	drone1.load_data(filename); // re reads info 
+    drone2.load_data(filename); // re reads info 
+    drone3.load_data(filename); // re reads info 
+    drone4.load_data(filename); // re reads info 
+    time_t currentTime = time(nullptr);
+    currentTime += 5 * 60;
+    struct tm* localTime = localtime(&currentTime);
+    int Hour = localTime->tm_hour;
+    int Min = localTime ->tm_min;
+    string amPM = "";
+    string min_str = "";
+    if(Hour == 0){
+        Hour = 12;
+        amPM = "am";
+    }
+    else if(Hour < 12){
+        amPM = "am";
+    }
+    else if (Hour == 12){
+        amPM = "pm";
+    }
+    else{
+        Hour = Hour%12;
+        amPM = "pm";
+    }
+    if(Min < 10){
+        min_str = "0" + to_string(Min);
+    } else {
+        min_str = to_string(Min);
+    }
+    
+    cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
+    
+    //calculate distances with 1,2,3,4 drones
+    double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
-	cout << "There are " << drone.get_size() << " nodes, computing route..." << endl;
-	cout << "	Shortest Route Discovered So Far" << endl;
+	cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
 
 	cout << "		" << distance << endl;
 	double BSF = distance;
@@ -165,7 +203,7 @@ int main() {
     // getting improved distances
 	while (true) {
 
-        double new_distance = round(drone.modified_nearest_neighbor_distance(p)*10)/10;
+        double new_distance = round(drone1.modified_nearest_neighbor_distance(p)*10)/10;
         
         if (new_distance < BSF) {
 
@@ -189,7 +227,7 @@ int main() {
 
     // writing route to file
 	string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
-	drone.write_route_to_file(outputFilename);	
+	drone1.write_route_to_file(outputFilename);	
 
     // graph plotting process
     signalsmith::plot::Plot2D plot(highestRange*4, highestRange*4);
@@ -204,7 +242,7 @@ int main() {
 		plot.y.minor(i);
 	}
     
-    vector<int> route = drone.get_route();
+    vector<int> route = drone1.get_route();
 
     
 	auto &line = plot.line();
@@ -229,6 +267,6 @@ int main() {
     //note:add creates the lines and marker makes the points
 
     // saves plot to svg file
-	string svgFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".svg";
-	plot.write(svgFilename);	
+	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".PNG";
+	plot.write(pngFilename);	
 }
