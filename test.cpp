@@ -11,6 +11,7 @@
 #include <chrono>
 #include <iomanip>
 #include <algorithm>
+#include <ctime>
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
 #else
@@ -21,6 +22,7 @@
 #include <stdio.h>
 
 using namespace std;
+using namespace chrono;
 
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
@@ -73,7 +75,7 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-
+    
 	// variables initialization	
 	string inputData;
 	string filename;
@@ -84,7 +86,7 @@ int main() {
 	double p = 0.10;
 	
 	// process: files intake
-	cout << "Please input a filename: ";
+	cout << "Enter the name of file: ";
 	cin >> filename;
 
 	inFS.open(filename);
@@ -147,15 +149,41 @@ int main() {
 
 	// variable initialization
 	double distance = 0.0;
-	nearest_neighbor drone;
-	drone.load_data(filename); // re reads info 
-	distance = round(drone.nearest_neighbor_distance()*10)/10;
+
+    // will get info for each number of drones
+    for(int i = 1; i <= 4; ++i) {
+        k_means drone(i);
+        drone.load_data(filename);
+
+        if(i = 1)   {
+            //clock stuff
+            
+        }
+        drone.kMeansClustering();
+
+        
+
+
+
+
+
+        
+        //finish
+    }
+
+
+   
+
+   
+    
+    //calculate distances with 1,2,3,4 drones
+    //double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
-	cout << "There are " << drone.get_size() << " nodes, computing route..." << endl;
-	cout << "	Shortest Route Discovered So Far" << endl;
+	// cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	// cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
 
-	cout << "		" << distance << endl;
+	// cout << "		" << distance << endl;
 	double BSF = distance;
 	string fileNameAdjusted = " ";;
     
@@ -165,7 +193,7 @@ int main() {
     // getting improved distances
 	while (true) {
 
-        double new_distance = round(drone.modified_nearest_neighbor_distance(p)*10)/10;
+        double new_distance = round(drone1.modified_nearest_neighbor_distance(p)*10)/10;
         
         if (new_distance < BSF) {
 
@@ -189,7 +217,7 @@ int main() {
 
     // writing route to file
 	string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
-	drone.write_route_to_file(outputFilename);	
+	drone1.write_route_to_file(outputFilename);	
 
     // graph plotting process
     signalsmith::plot::Plot2D plot(highestRange*4, highestRange*4);
@@ -204,7 +232,7 @@ int main() {
 		plot.y.minor(i);
 	}
     
-    vector<int> route = drone.get_route();
+    vector<int> route = drone1.get_route();
 
     
 	auto &line = plot.line();
@@ -229,6 +257,6 @@ int main() {
     //note:add creates the lines and marker makes the points
 
     // saves plot to svg file
-	string svgFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".svg";
-	plot.write(svgFilename);	
+	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".PNG";
+	plot.write(pngFilename);	
 }
