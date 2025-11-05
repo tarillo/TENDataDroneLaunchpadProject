@@ -182,6 +182,49 @@ int main() {
 	// prints to UI
 	// cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
 	// cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
+	nearest_neighbor drone1;
+    nearest_neighbor drone2;
+    nearest_neighbor drone3;
+    nearest_neighbor drone4;
+	drone1.load_data(filename); // re reads info 
+    drone2.load_data(filename); // re reads info 
+    drone3.load_data(filename); // re reads info 
+    drone4.load_data(filename); // re reads info 
+    time_t currentTime = time(nullptr);
+    currentTime += 5 * 60;
+    struct tm* localTime = localtime(&currentTime);
+    int Hour = localTime->tm_hour;
+    int Min = localTime ->tm_min;
+    string amPM = "";
+    string min_str = "";
+    if(Hour == 0){
+        Hour = 12;
+        amPM = "am";
+    }
+    else if(Hour < 12){
+        amPM = "am";
+    }
+    else if (Hour == 12){
+        amPM = "pm";
+    }
+    else{
+        Hour = Hour%12;
+        amPM = "pm";
+    }
+    if(Min < 10){
+        min_str = "0" + to_string(Min);
+    } else {
+        min_str = to_string(Min);
+    }
+    
+    cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
+    
+    //calculate distances with 1,2,3,4 drones
+    double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
+
+	// prints to UI
+	cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
 
 	// cout << "		" << distance << endl;
 	double BSF = distance;
@@ -259,4 +302,5 @@ int main() {
     // saves plot to svg file
 	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".PNG";
 	plot.write(pngFilename);	
+}
 }
