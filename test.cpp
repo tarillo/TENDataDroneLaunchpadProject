@@ -149,6 +149,39 @@ int main() {
 
 	// variable initialization
 	double distance = 0.0;
+
+    // will get info for each number of drones
+    for(int i = 1; i <= 4; ++i) {
+        k_means drone(i);
+        drone.load_data(filename);
+
+        if(i = 1)   {
+            //clock stuff
+            
+        }
+        drone.kMeansClustering();
+
+        
+
+
+
+
+
+        
+        //finish
+    }
+
+
+   
+
+   
+    
+    //calculate distances with 1,2,3,4 drones
+    //double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
+
+	// prints to UI
+	// cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	// cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
 	nearest_neighbor drone1;
     nearest_neighbor drone2;
     nearest_neighbor drone3;
@@ -193,7 +226,7 @@ int main() {
 	cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
 	cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
 
-	cout << "		" << distance << endl;
+	// cout << "		" << distance << endl;
 	double BSF = distance;
 	string fileNameAdjusted = " ";;
     
@@ -269,4 +302,5 @@ int main() {
     // saves plot to svg file
 	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".PNG";
 	plot.write(pngFilename);	
+}
 }
