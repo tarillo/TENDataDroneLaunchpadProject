@@ -149,6 +149,8 @@ int main() {
 	double distance = 0.0;
 	nearest_neighbor drone;
 	drone.load_data(filename); // re reads info 
+
+
 	distance = round(drone.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
@@ -163,19 +165,23 @@ int main() {
 	srand(time(NULL));
     
     // getting improved distances
-	while (true) {
+// 	while (true) {
 
-        double new_distance = round(drone.modified_nearest_neighbor_distance(p)*10)/10;
+//         double new_distance = round(drone.modified_nearest_neighbor_distance(p)*10)/10;
         
-        if (new_distance < BSF) {
+//         if (new_distance < BSF) {
 
-            BSF = new_distance;
-            cout << "		" << BSF << endl;
-        }
+//             BSF = new_distance;
+//             cout << "		" << BSF << endl;
+//         }
 
-        if (enterPressed()) break;  
+//         if (enterPressed()) break;  
 
-   }
+//    }
+   int numOfDrones;
+
+   cout << "Enter a choice" << endl;
+   cin >> numOfDrones;
 
 	ostringstream dist;
     fileNameAdjusted = filename.substr(0, filename.find('.'));
@@ -188,8 +194,11 @@ int main() {
     }
 
     // writing route to file
-	string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
-	drone.write_route_to_file(outputFilename);	
+    string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
+    cout << "hey" << endl;
+    drone.write_route_to_file(outputFilename);	  
+
+        cout << "beep" << endl;
 
     // graph plotting process
     signalsmith::plot::Plot2D plot(highestRange*4, highestRange*4);
@@ -204,27 +213,32 @@ int main() {
 		plot.y.minor(i);
 	}
     
-    vector<int> route = drone.get_route();
+    vector<vector<int>> route = drone.get_route(numOfDrones-1);
 
-    
-	auto &line = plot.line();
-	auto &line2 = plot.line();						//new line for different marker color
+    for(int i = 0; i < numOfDrones; i++) {
+        cout << "bee22p" << endl;
+
+        vector<int> currRoute = route.at(i);
+        int landingZoneIndex = currRoute.at(0);
+        auto &currline = plot.line();
+        //auto &currline2 = plot.line();						//new line for different marker color
+        currline.add(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
+        currline.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex],3);
+        //currline2.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
+        for(int j = 1; j < currRoute.size()-1; j++) {
+            int index = currRoute.at(j);
+            currline.marker(xCoords[index],yCoords[index],0);
+            currline.add(xCoords[index],yCoords[index]);
+        }
+        currline.add(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)]);
+        currline.dot(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)],4,1);
+    }
 
     // starting point
-	line.add(xCoords[route[0]],yCoords[route[0]]);
-
-    // adding points and connecting lines for every location
-	for (int x = 1; x < route.size()-1; ++x) {
-
-        int i = route[x];
-        line.marker(xCoords[i],yCoords[i]);
-		line.add(xCoords[i],yCoords[i]);
-	}
-
     // returning to starting point
-	line.dot(xCoords[route[0]],yCoords[route[0]],4,1);
-	line.add(xCoords[route[0]], yCoords[route[0]]);
-	line2.marker(xCoords[route[0]],yCoords[route[0]]);
+	// currline.dot(xCoords[route[0]],yCoords[route[0]],4,1);
+	// currline.add(xCoords[route[0]], yCoords[route[0]]);
+	// currline2.marker(xCoords[route[0]],yCoords[route[0]]);
 
     //note:add creates the lines and marker makes the points
 
