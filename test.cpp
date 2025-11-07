@@ -11,6 +11,7 @@
 #include <chrono>
 #include <iomanip>
 #include <algorithm>
+#include <ctime>
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
 #else
@@ -21,6 +22,7 @@
 #include <stdio.h>
 
 using namespace std;
+using namespace chrono;
 
 #ifdef _WIN32
     #include <conio.h>    // for _kbhit() and _getch() on Windows
@@ -73,7 +75,7 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-
+    
 	// variables initialization	
 	string inputData;
 	string filename;
@@ -84,7 +86,7 @@ int main() {
 	double p = 0.10;
 	
 	// process: files intake
-	cout << "Please input a filename: ";
+	cout << "Enter the name of file: ";
 	cin >> filename;
 
 	inFS.open(filename);
@@ -147,17 +149,90 @@ int main() {
 
 	// variable initialization
 	double distance = 0.0;
-	nearest_neighbor drone;
-	drone.load_data(filename); // re reads info 
+
+    // will get info for each number of drones
+    // for(int i = 1; i <= 4; ++i) {
+    //     k_means drone(i);
+    //     drone.load_data(filename);
+
+    //     if(i = 1)   {
+    //         //clock stuff
+            
+    //     }
+    //     drone.kMeansClustering();
+
+        
 
 
-	distance = round(drone.nearest_neighbor_distance()*10)/10;
+
+
+
+        
+    //     //finish
+    // }
+    
+    //calculate distances with 1,2,3,4 drones
+    //double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
-	cout << "There are " << drone.get_size() << " nodes, computing route..." << endl;
-	cout << "	Shortest Route Discovered So Far" << endl;
+	// cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	// cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
+	k_means drone1(1);
+    k_means drone2(2);
+    k_means drone3(3);
+    k_means drone4(4);
+	drone1.load_data(filename); // re reads info 
+    drone2.load_data(filename); // re reads info 
+    drone3.load_data(filename); // re reads info 
+    drone4.load_data(filename); // re reads info 
+    time_t currentTime = time(nullptr);
+    currentTime += 5 * 60;
+    struct tm* localTime = localtime(&currentTime);
+    int Hour = localTime->tm_hour;
+    int Min = localTime ->tm_min;
+    string amPM = "";
+    string min_str = "";
+    if(Hour == 0){
+        Hour = 12;
+        amPM = "am";
+    }
+    else if(Hour < 12){
+        amPM = "am";
+    }
+    else if (Hour == 12){
+        amPM = "pm";
+    }
+    else{
+        Hour = Hour%12;
+        amPM = "pm";
+    }
+    if(Min < 10){
+        min_str = "0" + to_string(Min);
+    } else {
+        min_str = to_string(Min);
+    }
 
-	cout << "		" << distance << endl;
+    cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
+    
+    drone1.kMeansClustering();
+    cout << "clear" << endl;
+    drone2.kMeansClustering();
+        cout << "clear" << endl;
+
+    drone3.kMeansClustering();
+        cout << "clear" << endl;
+
+    drone4.kMeansClustering();
+        cout << "clear" << endl;
+
+    //calculate distances with 1,2,3,4 drones
+    // double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
+
+	// prints to UI
+	cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
+	cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << " meters" << endl;
+
+	// cout << "		" << distance << endl;
 	double BSF = distance;
 	string fileNameAdjusted = " ";;
     
@@ -167,7 +242,7 @@ int main() {
     // getting improved distances
 // 	while (true) {
 
-//         double new_distance = round(drone.modified_nearest_neighbor_distance(p)*10)/10;
+    //double new_distance = round(drone1.modified_nearest_neighbor_distance(p)*10)/10;
         
 //         if (new_distance < BSF) {
 
@@ -179,10 +254,10 @@ int main() {
 
 //    }
    int numOfDrones;
+   k_means chosenDroneGroup;
 
    cout << "Enter a choice" << endl;
    cin >> numOfDrones;
-
 	ostringstream dist;
     fileNameAdjusted = filename.substr(0, filename.find('.'));
 
@@ -194,11 +269,8 @@ int main() {
     }
 
     // writing route to file
-    string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
-    cout << "hey" << endl;
-    drone.write_route_to_file(outputFilename);	  
-
-        cout << "beep" << endl;
+	string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
+	// drone1.write_route_to_file(outputFilename);	
 
     // graph plotting process
     signalsmith::plot::Plot2D plot(highestRange*4, highestRange*4);
@@ -212,11 +284,26 @@ int main() {
 		plot.x.minor(i);
 		plot.y.minor(i);
 	}
-    
-    vector<vector<int>> route = drone.get_route(numOfDrones-1);
+    cout << "here" << endl;
+    vector<vector<int>> route;
+    if(numOfDrones == 1) {
+        route = drone1.get_route();
+        cout << "a" << route.size() << endl;
+    }
+    else if(numOfDrones == 2) {
+        route = drone2.get_route();
+        cout << "b" << route.size() << endl;
+    }
+    else if(numOfDrones == 3) {
+        route = drone3.get_route();
+        cout << "c" << route.size() << endl;
+    }
+    else {
+        route = drone4.get_route();
+        cout << "d" << route.size() << endl;
+    }
 
-    for(int i = 0; i < numOfDrones; i++) {
-        cout << "bee22p" << endl;
+    cout << "also here" << endl;
 
         vector<int> currRoute = route.at(i);
         int landingZoneIndex = currRoute.at(0);
@@ -227,12 +314,12 @@ int main() {
         //currline2.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
         for(int j = 1; j < currRoute.size()-1; j++) {
             int index = currRoute.at(j);
+            
             currline.marker(xCoords[index],yCoords[index],0);
             currline.add(xCoords[index],yCoords[index]);
         }
         currline.add(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)]);
         currline.dot(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)],4,1);
-    }
 
     // starting point
     // returning to starting point
@@ -243,6 +330,6 @@ int main() {
     //note:add creates the lines and marker makes the points
 
     // saves plot to svg file
-	string svgFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".svg";
-	plot.write(svgFilename);	
+	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".svg";
+	plot.write(pngFilename);	
 }
