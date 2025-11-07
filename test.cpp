@@ -284,31 +284,30 @@ int main() {
 		plot.x.minor(i);
 		plot.y.minor(i);
 	}
-    cout << "here" << endl;
     vector<vector<int>> route;
     if(numOfDrones == 1) {
         route = drone1.get_route();
-        cout << "a" << route.size() << endl;
+        drone1.write_route_to_file(fileNameAdjusted,1);
     }
     else if(numOfDrones == 2) {
         route = drone2.get_route();
-        cout << "b" << route.size() << endl;
+        drone2.write_route_to_file(fileNameAdjusted,2);
     }
     else if(numOfDrones == 3) {
         route = drone3.get_route();
-        cout << "c" << route.size() << endl;
+        drone3.write_route_to_file(fileNameAdjusted,3);
     }
     else {
         route = drone4.get_route();
-        cout << "d" << route.size() << endl;
+        drone4.write_route_to_file(fileNameAdjusted,4);
     }
 
-    cout << "also here" << endl;
 
+    for (int i = 0; i < numOfDrones; i++) {
         vector<int> currRoute = route.at(i);
         int landingZoneIndex = currRoute.at(0);
         auto &currline = plot.line();
-        //auto &currline2 = plot.line();						//new line for different marker color
+
         currline.add(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
         currline.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex],3);
         //currline2.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
@@ -320,6 +319,7 @@ int main() {
         }
         currline.add(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)]);
         currline.dot(xCoords[currRoute.at(currRoute.size()-1)],yCoords[currRoute.at(currRoute.size()-1)],4,1);
+    }
 
     // starting point
     // returning to starting point

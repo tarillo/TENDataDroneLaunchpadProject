@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <tuple>
 #include <ctime> // for random
 using namespace std;
 
@@ -28,7 +29,7 @@ class k_means{
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
     void write_route_to_file(const string &inputFilename, int chosenNumClusters);
-    void nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
+    void nearest_neighbor_distance(vector<vector<tuple<int,double,double>>> IndividualClusters);
     //double modified_nearest_neighbor_distance(double p);
     
     void kMeansClustering();
@@ -45,7 +46,7 @@ void k_means::kMeansClustering()    {
     
     // number of times to run k means to get BEST clusters
     for(int l = 0; l < numIterations; ++l){
-        vector<vector<pair<double, double>>> IndividualClusters(k);
+        vector<vector<tuple<int,double,double>>> IndividualClusters(k);
         bestRouteDistance = 1e9;
         double centers[k][2];
 
@@ -87,7 +88,7 @@ void k_means::kMeansClustering()    {
                     clusters[j] = nearestCluster; // assign point j to nearest cluster
                 }
 
-                IndividualClusters[nearestCluster].push_back({coordinates[j][0], coordinates[j][1]}); // making list of points in each cluster
+                IndividualClusters[nearestCluster].push_back({j, coordinates[j][0], coordinates[j][1]}); // making list of points in each cluster
                 
             }
 
@@ -117,12 +118,11 @@ void k_means::kMeansClustering()    {
                     centers[cIndex][1] = newCenters[cIndex][1] / pointsInCluster[cIndex];
                 }
 
-                IndividualClusters[cIndex].insert(IndividualClusters[cIndex].begin(), {centers[cIndex][0], centers[cIndex][1]}); // adds center to beginning of cluster
+                IndividualClusters[cIndex].insert(IndividualClusters[cIndex].begin(), {cIndex, centers[cIndex][0], centers[cIndex][1]}); // adds center to beginning of cluster
             }
 
 
         } while(changed);
-        
         nearest_neighbor_distance(IndividualClusters);
         if (bestRouteDistance < bestDistanceOverall) {
             bestDistanceOverall = bestRouteDistance;
@@ -231,14 +231,14 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
     //In the test.cpp have a for loop that prints out: Writing fileName1, fileName2, fileName3, etc to disk
 }
 
-void k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
+void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>> IndividualClusters) {
 
     // variables initialization
     double total_distance_all_clusters = 0.0;
     vector<vector<int>> tempRoute;
     clusterDistances.clear();
     for(int c = 0; c < IndividualClusters.size(); ++c){
-        vector<pair<double, double>> cluster = IndividualClusters[c];
+        vector<tuple<int,double,double>> cluster = IndividualClusters[c];
         int cluster_size = cluster.size();
 
         if(cluster_size > 0){
@@ -253,33 +253,35 @@ void k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> Ind
             for (int i = 1; i < cluster_size; ++i) {
 
                 int next_tree = -1;
+                int nodeChosen = 0;
                 double minDist = 100000;
 
                 // the trees being compared to
                 for (int j = 0; j < cluster_size; ++j) {
                     
                     if (!visited[j]) { // not interested in nodes already in recorded route
-                        double dx = cluster[current_tree].first - cluster[j].first;
-                        double dy = cluster[current_tree].second - cluster[j].second;
+                        double dx = get<1>(cluster[current_tree]) - get<1>(cluster[j]);
+                        double dy = get<2>(cluster[current_tree]) - get<2>(cluster[j]);
                         double dist = sqrt(dx * dx + dy * dy); 
 
                         // finding closest tree and compares to previous closest tree
                         if (dist < minDist) {
                             minDist = dist;
                             next_tree = j;
+                            nodeChosen = get<0>(cluster[current_tree]);
                         }
                     }
                 }  
                 // updates route as close tree found and removes from being checked again
                 if (next_tree != -1) {
                     cluster_distance += minDist;
-                    cluster_route[i] = next_tree;
+                    cluster_route[i] = nodeChosen;
                     visited[next_tree] = true;
                     current_tree = next_tree;
                 }
             }
-            double dx = cluster[current_tree].first - cluster[0].first;
-            double dy = cluster[current_tree].second - cluster[0].second;
+            double dx = get<1>(cluster[current_tree]) - get<1>(cluster[0]);
+            double dy = get<2>(cluster[current_tree]) - get<2>(cluster[0]);
             cluster_distance += sqrt(dx * dx + dy * dy); 
             cluster_route[cluster_size - 1] = 0; // '- 1' is to protect from writing out of bounds
             total_distance_all_clusters += cluster_distance; 
