@@ -13,11 +13,12 @@ class k_means{
         int num_points;
         double coordinates[4096][2];
         int route[4096];
-        int bestRouteDistance = 0;
+        double bestRouteDistance = 1000000;
         int bestCluster[4096];
         double OF;
         vector<vector<int>> clusterRoute; 
         vector<double> clusterDistances;
+
         
    public:
     k_means() : num_points(0), k(0), numIterations(10) {}
@@ -26,8 +27,8 @@ class k_means{
     vector<vector<int>> get_route() const;  
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
-    void write_route_to_file(const string& filename, int choosenNumClusters);
-    double nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
+    void write_route_to_file(const string &inputFilename, int choosenNumClusters);
+    void nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
     //double modified_nearest_neighbor_distance(double p);
     
     void kMeansClustering();
@@ -36,15 +37,16 @@ class k_means{
 
 void k_means::kMeansClustering()    {
     srand(time(NULL));
-    vector<vector<pair<double, double>>> IndividualClusters(k);
-    for (auto &cluster : IndividualClusters) cluster.clear();
+    
+    
 
-    double bestDistance = 100000;
+    double bestDistanceOverall = 100000;
     
     
     // number of times to run k means to get BEST clusters
     for(int l = 0; l < numIterations; ++l){
-
+        vector<vector<pair<double, double>>> IndividualClusters(k);
+        bestRouteDistance = 1e9;
         double centers[k][2];
 
         // throwing darts part
@@ -62,7 +64,7 @@ void k_means::kMeansClustering()    {
             
             // assign every point to nearest cluster center
             
-            
+            for (auto &cluster : IndividualClusters) cluster.clear();
             
             for(int j = 0; j < num_points; ++j){
                 
@@ -121,24 +123,20 @@ void k_means::kMeansClustering()    {
 
         } while(changed);
         
-        
-        
-        for(int c = 0; c < k; ++c){
-            bestRouteDistance = nearest_neighbor_distance(IndividualClusters);
+        nearest_neighbor_distance(IndividualClusters);
+        if (bestRouteDistance < bestDistanceOverall) {
+            bestDistanceOverall = bestRouteDistance;
         }
         
+        
+        
 
-        if(bestRouteDistance < bestDistance){
-            bestDistance = bestRouteDistance;
-            for(int i = 0; i < num_points; ++i){
-                bestCluster[i] = route[i];
-            }
-        }
+        
     }
 
-    for(int i = 0; i < num_points; ++i){
-        route[i] = bestCluster[i];
-    }
+    // for(int i = 0; i < num_points; ++i){
+    //     route[i] = bestCluster[i];
+    // }
     
     //need to fix. clusters was defined in loop above so it runs into issues here. Same thing with centers 
     // double currentOF = 0.0;
@@ -213,9 +211,13 @@ void k_means::load_data(const string &filename) {
 
 
 
+
 void k_means::write_route_to_file(const string &inputFilename, int choosenNumClusters) {
     for (int c = 0; c < choosenNumClusters; ++c) {         // iterate over the vector
-        string fileName = inputFilename + "_" + to_string(c+1) + "_SOLUTION_" + to_string(clusterDistances[c]) + ".txt"; 
+        ostringstream oss;
+        oss.precision(0);
+        oss << fixed << clusterDistances[c];
+        string fileName = inputFilename + "_" + to_string(c+1) + "_SOLUTION_" + oss.str() + ".txt"; 
         ofstream fout(fileName);
         if (!fout) {
         cerr << "Error: Could not write to " << fileName << endl;
@@ -229,14 +231,16 @@ void k_means::write_route_to_file(const string &inputFilename, int choosenNumClu
     //In the test.cpp have a for loop that prints out: Writing fileName1, fileName2, fileName3, etc to disk
 }
 
-double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
+void k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
 
     // variables initialization
     double total_distance_all_clusters = 0.0;
-    clusterRoute.clear();
+    vector<vector<int>> tempRoute;
+    clusterDistances.clear();
     for(int c = 0; c < IndividualClusters.size(); ++c){
         vector<pair<double, double>> cluster = IndividualClusters[c];
         int cluster_size = cluster.size();
+
         if(cluster_size > 0){
             bool visited[4096] = {false};    
             double cluster_distance = 0.0;
@@ -279,13 +283,16 @@ double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> I
             cluster_distance += sqrt(dx * dx + dy * dy); 
             cluster_route[cluster_size] = 0;
             total_distance_all_clusters += cluster_distance; 
-            clusterRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
+            tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
             clusterDistances.push_back(cluster_distance);
         }
     }   
-
-    bestRouteDistance = total_distance_all_clusters;
-    return total_distance_all_clusters;
+   
+    if(bestRouteDistance > total_distance_all_clusters){
+        bestRouteDistance = total_distance_all_clusters;
+        clusterRoute = tempRoute;
+            
+    }
 }
 
 
@@ -369,4 +376,3 @@ double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> I
     
 //     return total_distance;
 // }
-
