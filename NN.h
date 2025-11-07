@@ -13,7 +13,7 @@ class k_means{
         int num_points;
         double coordinates[4096][2];
         int route[4096];
-        int bestRouteDistance = 0;
+        double bestRouteDistance = 1000000;
         int bestCluster[4096];
         double OF;
         vector<vector<int>> clusterRoute; 
@@ -26,7 +26,7 @@ class k_means{
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
     void write_route_to_file(const string& filename);
-    double nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
+    void nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
     //double modified_nearest_neighbor_distance(double p);
     
     void kMeansClustering();
@@ -35,15 +35,16 @@ class k_means{
 
 void k_means::kMeansClustering()    {
     srand(time(NULL));
-    vector<vector<pair<double, double>>> IndividualClusters(k);
-    for (auto &cluster : IndividualClusters) cluster.clear();
+    
+    
 
-    double bestDistance = 100000;
+    double bestDistanceOverall = 100000;
     
     
     // number of times to run k means to get BEST clusters
     for(int l = 0; l < numIterations; ++l){
-
+        vector<vector<pair<double, double>>> IndividualClusters(k);
+        bestRouteDistance = 1e9;
         double centers[k][2];
 
         // throwing darts part
@@ -61,7 +62,7 @@ void k_means::kMeansClustering()    {
             
             // assign every point to nearest cluster center
             
-            
+            for (auto &cluster : IndividualClusters) cluster.clear();
             
             for(int j = 0; j < num_points; ++j){
                 
@@ -120,24 +121,20 @@ void k_means::kMeansClustering()    {
 
         } while(changed);
         
-        
-        
-        for(int c = 0; c < k; ++c){
-            bestRouteDistance = nearest_neighbor_distance(IndividualClusters);
+        nearest_neighbor_distance(IndividualClusters);
+        if (bestRouteDistance < bestDistanceOverall) {
+            bestDistanceOverall = bestRouteDistance;
         }
         
+        
+        
 
-        if(bestRouteDistance < bestDistance){
-            bestDistance = bestRouteDistance;
-            for(int i = 0; i < num_points; ++i){
-                bestCluster[i] = route[i];
-            }
-        }
+        
     }
 
-    for(int i = 0; i < num_points; ++i){
-        route[i] = bestCluster[i];
-    }
+    // for(int i = 0; i < num_points; ++i){
+    //     route[i] = bestCluster[i];
+    // }
     
     //need to fix. clusters was defined in loop above so it runs into issues here. Same thing with centers 
     // double currentOF = 0.0;
@@ -233,14 +230,15 @@ void k_means::write_route_to_file(const string &filename) {
     cout << "Route written to disk as " << filename << endl;
 }
 
-double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
+void k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
 
     // variables initialization
     double total_distance_all_clusters = 0.0;
-    clusterRoute.clear();
+    vector<vector<int>> tempRoute;
     for(int c = 0; c < IndividualClusters.size(); ++c){
         vector<pair<double, double>> cluster = IndividualClusters[c];
         int cluster_size = cluster.size();
+
         if(cluster_size > 0){
             bool visited[4096] = {false};    
             double cluster_distance = 0.0;
@@ -283,11 +281,15 @@ double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> I
             cluster_distance += sqrt(dx * dx + dy * dy); 
             cluster_route[cluster_size] = 0;
             total_distance_all_clusters += cluster_distance; 
-            clusterRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
+            tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
         }
     }   
-    bestRouteDistance = total_distance_all_clusters;
-    return total_distance_all_clusters;
+   
+    if(bestRouteDistance > total_distance_all_clusters){
+        bestRouteDistance = total_distance_all_clusters;
+        clusterRoute = tempRoute;
+            
+    }
 }
 
 
