@@ -27,7 +27,7 @@ class k_means{
     vector<vector<int>> get_route() const;  
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
-    void write_route_to_file(const string &inputFilename, int choosenNumClusters);
+    void write_route_to_file(const string &inputFilename, int chosenNumClusters);
     void nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
     //double modified_nearest_neighbor_distance(double p);
     
@@ -87,7 +87,7 @@ void k_means::kMeansClustering()    {
                     clusters[j] = nearestCluster; // assign point j to nearest cluster
                 }
 
-                IndividualClusters[nearestCluster].push_back({coordinates[j][0], coordinates[j][1]});
+                IndividualClusters[nearestCluster].push_back({coordinates[j][0], coordinates[j][1]}); // making list of points in each cluster
                 
             }
 
@@ -117,7 +117,7 @@ void k_means::kMeansClustering()    {
                     centers[cIndex][1] = newCenters[cIndex][1] / pointsInCluster[cIndex];
                 }
 
-                IndividualClusters[cIndex].insert(IndividualClusters[cIndex].begin(), {centers[cIndex][0], centers[cIndex][1]});
+                IndividualClusters[cIndex].insert(IndividualClusters[cIndex].begin(), {centers[cIndex][0], centers[cIndex][1]}); // adds center to beginning of cluster
             }
 
 
@@ -212,8 +212,8 @@ void k_means::load_data(const string &filename) {
 
 
 
-void k_means::write_route_to_file(const string &inputFilename, int choosenNumClusters) {
-    for (int c = 0; c < choosenNumClusters; ++c) {         // iterate over the vector
+void k_means::write_route_to_file(const string &inputFilename, int chosenNumClusters) {
+    for (int c = 0; c < chosenNumClusters; ++c) {         // iterate over the vector
         ostringstream oss;
         oss.precision(0);
         oss << fixed << clusterDistances[c];
@@ -278,10 +278,10 @@ void k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> Ind
                     current_tree = next_tree;
                 }
             }
-            double dx = cluster[current_tree].first - cluster[0].first; // this part in the wrong place???
+            double dx = cluster[current_tree].first - cluster[0].first;
             double dy = cluster[current_tree].second - cluster[0].second;
             cluster_distance += sqrt(dx * dx + dy * dy); 
-            cluster_route[cluster_size] = 0;
+            cluster_route[cluster_size - 1] = 0; // '- 1' is to protect from writing out of bounds
             total_distance_all_clusters += cluster_distance; 
             tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
             clusterDistances.push_back(cluster_distance);
