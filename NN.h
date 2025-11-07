@@ -17,6 +17,7 @@ class k_means{
         int bestCluster[4096];
         double OF;
         vector<vector<int>> clusterRoute; 
+        vector<double> clusterDistances;
         
    public:
     k_means() : num_points(0), k(0), numIterations(10) {}
@@ -25,7 +26,7 @@ class k_means{
     vector<vector<int>> get_route() const;  
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
-    void write_route_to_file(const string& filename);
+    void write_route_to_file(const string& filename, int choosenNumClusters);
     double nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters);
     //double modified_nearest_neighbor_distance(double p);
     
@@ -212,25 +213,20 @@ void k_means::load_data(const string &filename) {
 
 
 
-void k_means::write_route_to_file(const string &filename) {
-
-    ofstream fout(filename);
-
-    // Error check : file opening
-    if (!fout) {
-
-        cerr << "Error: Could not write to " << filename << endl;
-        return;
+void k_means::write_route_to_file(const string &inputFilename, int choosenNumClusters) {
+    for (int c = 0; c < choosenNumClusters; ++c) {         // iterate over the vector
+        string fileName = inputFilename + "_" + to_string(c+1) + "_SOLUTION_" + to_string(clusterDistances[c]) + ".txt"; 
+        ofstream fout(fileName);
+        if (!fout) {
+        cerr << "Error: Could not write to " << fileName << endl;
+        continue;
+        }
+        for(int i = 0; i < clusterRoute[c].size(); ++i){
+            fout << clusterRoute[c][i] << endl;
+        }
+        fout.close();
     }
-
-    vector<int> r = get_route(); // get the route vector
-    for (int node : r) {         // iterate over the vector
-
-        fout << node +1 << endl;
-    }
-    
-    fout.close();
-    cout << "Route written to disk as " << filename << endl;
+    //In the test.cpp have a for loop that prints out: Writing fileName1, fileName2, fileName3, etc to disk
 }
 
 double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> IndividualClusters) {
@@ -284,8 +280,10 @@ double k_means::nearest_neighbor_distance(vector<vector<pair<double, double>>> I
             cluster_route[cluster_size] = 0;
             total_distance_all_clusters += cluster_distance; 
             clusterRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
+            clusterDistances.push_back(cluster_distance);
         }
     }   
+
     bestRouteDistance = total_distance_all_clusters;
     return total_distance_all_clusters;
 }
