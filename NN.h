@@ -632,7 +632,7 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
             fout << clusterRoute[c][i] << endl;
         }
         fout.close();
-        cout << fileName << ", "
+        cout << fileName << ", ";
     }
     cout << "to disk" << endl;
     //In the test.cpp have a for loop that prints out: Writing fileName1, fileName2, fileName3, etc to disk

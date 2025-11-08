@@ -320,7 +320,7 @@ int main() {
         drone4.write_route_to_file(fileNameAdjusted,4);
     }
 
-
+    auto &scatter = plot.lineFill();
     for (int i = 0; i < numOfDrones; i++) {
         vector<tuple<int,double,double>> currRoute = route.at(i);
         tuple<int,double,double> landingZoneIndex = currRoute.at(0);
@@ -337,7 +337,10 @@ int main() {
         }
 
         currline.add(get<1>(landingZoneIndex),get<2>(landingZoneIndex));
-        currline.dot(get<1>(landingZoneIndex),get<2>(landingZoneIndex),4,1);
+        
+        scatter.dot(get<1>(landingZoneIndex),get<2>(landingZoneIndex),6,1);
+        
+        
     }
 
     // starting point
