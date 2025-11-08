@@ -691,13 +691,18 @@ void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>>
             double dy = get<2>(cluster[current_tree]) - get<2>(cluster[0]);
             cluster_distance += sqrt(dx * dx + dy * dy); 
             //cluster_route[cluster_size - 1] = 0; // '- 1' is to protect from writing out of bounds
+            cluster_route[cluster_size] = 0; 
             total_distance_all_clusters += cluster_distance; 
-            tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size));
+            tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size + 1));
             clusterDistances.push_back(cluster_distance);
+
+            //total_distance_all_clusters += cluster_distance; 
+            //tempRoute.push_back(vector<int>(cluster_route, cluster_route + cluster_size));
+            //clusterDistances.push_back(cluster_distance);
         }
     }   
    
-    if(bestRouteDistance > total_distance_all_clusters){
+    if(bestRouteDistance == 0 || bestRouteDistance > total_distance_all_clusters){
         bestRouteDistance = total_distance_all_clusters;
         clusterRoute = tempRoute;
             
