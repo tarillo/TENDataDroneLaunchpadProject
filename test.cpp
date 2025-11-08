@@ -1,3 +1,4 @@
+
 #include "plot.h"
 #include "NN.h"
 #include <iostream>
@@ -151,15 +152,15 @@ int main() {
 	double distance = 0.0;
 
     // will get info for each number of drones
-    for(int i = 1; i <= 4; ++i) {
-        k_means drone(i);
-        drone.load_data(filename);
+    // for(int i = 1; i <= 4; ++i) {
+    //     k_means drone(i);
+    //     drone.load_data(filename);
 
-        if(i = 1)   {
-            //clock stuff
+    //     if(i = 1)   {
+    //         //clock stuff
             
-        }
-        drone.kMeansClustering();
+    //     }
+    //     drone.kMeansClustering();
 
         
 
@@ -168,13 +169,8 @@ int main() {
 
 
         
-        //finish
-    }
-
-
-   
-
-   
+    //     //finish
+    // }
     
     //calculate distances with 1,2,3,4 drones
     //double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
@@ -182,10 +178,10 @@ int main() {
 	// prints to UI
 	// cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
 	// cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
-	nearest_neighbor drone1;
-    nearest_neighbor drone2;
-    nearest_neighbor drone3;
-    nearest_neighbor drone4;
+	k_means drone1(1);
+    k_means drone2(2);
+    k_means drone3(3);
+    k_means drone4(4);
 	drone1.load_data(filename); // re reads info 
     drone2.load_data(filename); // re reads info 
     drone3.load_data(filename); // re reads info 
@@ -216,17 +212,45 @@ int main() {
     } else {
         min_str = to_string(Min);
     }
-    
+
     cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
     
+    drone1.kMeansClustering();
+    cout << "clear" << endl;
+
+
     //calculate distances with 1,2,3,4 drones
-    double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
+    // double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
-	cout << "1) If you use 1 drone(s), the total route will be " << drone1.get_size() << " meters" << endl;
-	cout << "    i. Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1_distance << " meters" << endl;
+	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getClusterDistances().at(0) << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << " meters" << endl;
 
-	// cout << "		" << distance << endl;
+    drone2.kMeansClustering();
+        cout << "clear" << endl;
+
+    cout << "1) If you use 2 drone(s), the total route will be " << drone2.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(0).size() << " locations, route is " << drone2.getClusterDistances().at(0)-1 << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(1).size() << " locations, route is " << drone2.getClusterDistances().at(1)-1 << " meters" << endl;
+    
+    drone3.kMeansClustering();
+        cout << "clear" << endl;
+
+    cout << "1) If you use 3 drone(s), the total route will be " << drone3.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(0).size() << " locations, route is " << drone3.getClusterDistances().at(0)-1 << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(1).size() << " locations, route is " << drone3.getClusterDistances().at(1)-1 << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(2).size() << " locations, route is " << drone3.getClusterDistances().at(2)-1 << " meters" << endl;
+
+    drone4.kMeansClustering();
+        cout << "clear" << endl;
+	
+    cout << "1) If you use 4 drone(s), the total route will be " << drone4.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(0).size() << " locations, route is " << drone4.getClusterDistances().at(0)-1 << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(1).size() << " locations, route is " << drone4.getClusterDistances().at(1)-1 << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(2).size() << " locations, route is " << drone4.getClusterDistances().at(2)-1 << " meters" << endl;
+    cout << "    iV.  Landing Pad 4 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(3).size() << " locations, route is " << drone4.getClusterDistances().at(3)-1 << " meters" << endl;
+        
+        // cout << "		" << distance << endl;
 	double BSF = distance;
 	string fileNameAdjusted = " ";;
     
@@ -234,20 +258,24 @@ int main() {
 	srand(time(NULL));
     
     // getting improved distances
-	while (true) {
+// 	while (true) {
 
-        double new_distance = round(drone1.modified_nearest_neighbor_distance(p)*10)/10;
+    //double new_distance = round(drone1.modified_nearest_neighbor_distance(p)*10)/10;
         
-        if (new_distance < BSF) {
+//         if (new_distance < BSF) {
 
-            BSF = new_distance;
-            cout << "		" << BSF << endl;
-        }
+//             BSF = new_distance;
+//             cout << "		" << BSF << endl;
+//         }
 
-        if (enterPressed()) break;  
+//         if (enterPressed()) break;  
 
-   }
+//    }
+   int numOfDrones;
+   k_means chosenDroneGroup;
 
+   cout << "Enter a choice" << endl;
+   cin >> numOfDrones;
 	ostringstream dist;
     fileNameAdjusted = filename.substr(0, filename.find('.'));
 
@@ -260,10 +288,10 @@ int main() {
 
     // writing route to file
 	string outputFilename = filename + "_SOLUTION_" + dist.str() + ".txt";
-	drone1.write_route_to_file(outputFilename);	
+	// drone1.write_route_to_file(outputFilename);	
 
     // graph plotting process
-    signalsmith::plot::Plot2D plot(highestRange*4, highestRange*4);
+    signalsmith::plot::Plot2D plot(1920, 1920);
 	plot.x.label("X-Axis");
 	plot.y.label("Y-Axis");
 	plot.x.major(0);
@@ -274,33 +302,56 @@ int main() {
 		plot.x.minor(i);
 		plot.y.minor(i);
 	}
-    
-    vector<int> route = drone1.get_route();
+    vector<vector<tuple<int,double,double>>> route;
+    if(numOfDrones == 1) {
+        route = drone1.getIndividualClusterSet();
+        drone1.write_route_to_file(fileNameAdjusted,1);
+    }
+    else if(numOfDrones == 2) {
+        route = drone2.getIndividualClusterSet();
+        drone2.write_route_to_file(fileNameAdjusted,2);
+    }
+    else if(numOfDrones == 3) {
+        route = drone3.getIndividualClusterSet();
+        drone3.write_route_to_file(fileNameAdjusted,3);
+    }
+    else {
+        route = drone4.getIndividualClusterSet();
+        drone4.write_route_to_file(fileNameAdjusted,4);
+    }
 
-    
-	auto &line = plot.line();
-	auto &line2 = plot.line();						//new line for different marker color
+    auto &scatter = plot.lineFill();
+    for (int i = 0; i < numOfDrones; i++) {
+        vector<tuple<int,double,double>> currRoute = route.at(i);
+        tuple<int,double,double> landingZoneIndex = currRoute.at(0);
+        auto &currline = plot.line();
+
+        currline.add(get<1>(landingZoneIndex),get<2>(landingZoneIndex));
+        currline.marker(get<1>(landingZoneIndex),get<2>(landingZoneIndex),0);
+        //currline2.marker(xCoords[landingZoneIndex],yCoords[landingZoneIndex]);
+        for(int j = 1; j < currRoute.size(); j++) {
+            tuple<int,double,double> index = currRoute.at(j);
+            
+            currline.marker(get<1>(index),get<2>(index),0);
+            currline.add(get<1>(index),get<2>(index));
+        }
+
+        currline.add(get<1>(landingZoneIndex),get<2>(landingZoneIndex));
+        
+        scatter.dot(get<1>(landingZoneIndex),get<2>(landingZoneIndex),6,1);
+        
+        
+    }
 
     // starting point
-	line.add(xCoords[route[0]],yCoords[route[0]]);
-
-    // adding points and connecting lines for every location
-	for (int x = 1; x < route.size()-1; ++x) {
-
-        int i = route[x];
-        line.marker(xCoords[i],yCoords[i]);
-		line.add(xCoords[i],yCoords[i]);
-	}
-
     // returning to starting point
-	line.dot(xCoords[route[0]],yCoords[route[0]],4,1);
-	line.add(xCoords[route[0]], yCoords[route[0]]);
-	line2.marker(xCoords[route[0]],yCoords[route[0]]);
+	// currline.dot(xCoords[route[0]],yCoords[route[0]],4,1);
+	// currline.add(xCoords[route[0]], yCoords[route[0]]);
+	// currline2.marker(xCoords[route[0]],yCoords[route[0]]);
 
     //note:add creates the lines and marker makes the points
 
     // saves plot to svg file
-	string pngFilename = fileNameAdjusted + "_SOLUTION_" + dist.str() + ".PNG";
+	string pngFilename = fileNameAdjusted + "_OVERALL_SOLUTION.svg";
 	plot.write(pngFilename);	
-}
 }
