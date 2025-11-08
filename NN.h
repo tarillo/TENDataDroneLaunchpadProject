@@ -36,8 +36,19 @@ class k_means{
     
     void kMeansClustering();
     vector<vector<tuple<int,double,double>>> getIndividualClusterSet();
+    tuple<double,double> getClusterCenter(int clusterIndex) const;
 
 };   
+tuple<double,double> k_means::getClusterCenter(int clusterIndex) const {
+    if(clusterIndex < 0 || clusterIndex >= IndividualClusters.size() || IndividualClusters[clusterIndex].empty()) {
+        cerr << "Error: Invalid cluster index or empty cluster" << endl;
+        return {0.0, 0.0};
+    }
+    // Last element is the center
+    const auto& lastElement = IndividualClusters[clusterIndex].front();
+    return { get<1>(lastElement), get<2>(lastElement) };
+}
+
 
 vector<double> k_means::getClusterDistances() {
     return clusterDistances;
