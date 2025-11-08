@@ -31,7 +31,7 @@ class k_means{
     void load_data(const string &filename);         //updates coordinate array by retrieving coordinates from file    
     //double euclidean(int i, int j);
     void write_route_to_file(const string &inputFilename, int chosenNumClusters);
-    void nearest_neighbor_distance(vector<vector<tuple<int,double,double>>> IndividualClusters);
+    void nearest_neighbor_distance();
     //double modified_nearest_neighbor_distance(double p);
     
     void kMeansClustering();
@@ -142,7 +142,7 @@ void k_means::kMeansClustering()    {
 
 
         } while(changed);
-        nearest_neighbor_distance(IndividualClusters);
+        nearest_neighbor_distance();
         if (bestRouteDistance < bestDistanceOverall) {
             bestDistanceOverall = bestRouteDistance;
         }  
@@ -319,10 +319,11 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
 //     }
 // }
 
-void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>> IndividualClusters) {
+void k_means::nearest_neighbor_distance() {
 
     double total_distance_all_clusters = 0.0;
     vector<vector<int>> tempRoute;
+    vector<vector<tuple<int,double,double>>> newlyFormedIndividualClusters(IndividualClusters.size());
     clusterDistances.clear();
 
     for(int c = 0; c < IndividualClusters.size(); ++c){
@@ -338,6 +339,7 @@ void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>>
         // Start at the cluster center (first element)
         int current_tree = 0;
         cluster_route[0] = get<0>(cluster[current_tree]);
+        newlyFormedIndividualClusters.at(c).push_back(cluster[current_tree]);
         visited[current_tree] = true;
 
         // iterate over all nodes including center
@@ -363,6 +365,7 @@ void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>>
                 cluster_route[i] = get<0>(cluster[next_tree]);
                 visited[next_tree] = true;
                 current_tree = next_tree;
+                newlyFormedIndividualClusters.at(c).push_back(cluster[next_tree]);
             }
         }
 
@@ -380,5 +383,6 @@ void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>>
     if(bestRouteDistance == 0 || bestRouteDistance > total_distance_all_clusters){
         bestRouteDistance = total_distance_all_clusters;
         clusterRoute = tempRoute;
+        IndividualClusters = newlyFormedIndividualClusters;
     }
 }
