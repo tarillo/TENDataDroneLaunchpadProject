@@ -76,7 +76,8 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-    
+    cout << fixed << setprecision(0);
+
 	// variables initialization	
 	string inputData;
 	string filename;
