@@ -37,17 +37,20 @@ class k_means{
     
     void kMeansClustering();
     vector<vector<tuple<int,double,double>>> getIndividualClusterSet();
-    tuple<double,double> getClusterCenter(int clusterIndex) const;
+    tuple<int,int> getClusterCenter(int clusterIndex) const;
 
 };   
-tuple<double,double> k_means::getClusterCenter(int clusterIndex) const {
+tuple<int,int> k_means::getClusterCenter(int clusterIndex) const {
+
     if(clusterIndex < 0 || clusterIndex >= IndividualClusters.size() || IndividualClusters[clusterIndex].empty()) {
         cerr << "Error: Invalid cluster index or empty cluster" << endl;
-        return {0.0, 0.0};
+        return {0, 0};
     }
     // Last element is the center
     const auto& lastElement = IndividualClusters[clusterIndex].front();
-    return { get<1>(lastElement), get<2>(lastElement) };
+    int x = static_cast<int>(round(get<1>(lastElement)));
+    int y = static_cast<int>(round(get<2>(lastElement)));
+    return {x,y};
 }
 
 
@@ -250,7 +253,7 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
         cerr << "Error: Could not write to " << fileName << endl;
         continue;
         }
-        for(int i = 0; i < clusterRoute[c].size(); ++i){
+        for(int i = 1; i < clusterRoute[c].size() -1; ++i){
             fout << clusterRoute[c][i] << endl;
         }
         fout.close();

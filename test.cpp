@@ -76,7 +76,7 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-    cout << fixed << setprecision(0);
+    cout << fixed << setprecision(1);
 
 	// variables initialization	
 	string inputData;
@@ -217,42 +217,44 @@ int main() {
     cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
     
     drone1.kMeansClustering();
-    cout << "clear" << endl;
-
 
     //calculate distances with 1,2,3,4 drones
     // double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
-    tuple<double,double> center = drone1.getClusterCenter(0);
-    cout << "Landing Pad 1 should be at (" << get<0>(center) << ", " << get<1>(center) << ") ..." << endl;
+    tuple<int,int> center1 = drone1.getClusterCenter(0);
 
 	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getClusterDistances().at(0) << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(center1) << "," << get<1>(center1) << "], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
+
 
     drone2.kMeansClustering();
-        cout << "clear" << endl;
-
-    cout << "1) If you use 2 drone(s), the total route will be " << drone2.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(0).size() << " locations, route is " << drone2.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(1).size() << " locations, route is " << drone2.getClusterDistances().at(1)-1 << " meters" << endl;
+    tuple<int,int> d2_center1 = drone2.getClusterCenter(0);
+    tuple<int,int> d2_center2 = drone2.getClusterCenter(1);
+    cout << "2) If you use 2 drone(s), the total route will be " << drone2.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d2_center1) << "," << get<1>(d2_center1) << "], serving " << drone2.getIndividualClusterSet().at(0).size() - 1 << " locations, route is " << drone2.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d2_center2) << "," << get<1>(d2_center2) << "], serving " << drone2.getIndividualClusterSet().at(1).size() - 1<< " locations, route is " << drone2.getClusterDistances().at(1) << " meters" << endl;
     
-    drone3.kMeansClustering();
-        cout << "clear" << endl;
 
-    cout << "1) If you use 3 drone(s), the total route will be " << drone3.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(0).size() << " locations, route is " << drone3.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(1).size() << " locations, route is " << drone3.getClusterDistances().at(1)-1 << " meters" << endl;
-    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(2).size() << " locations, route is " << drone3.getClusterDistances().at(2)-1 << " meters" << endl;
+    drone3.kMeansClustering();
+    tuple<int,int> d3_center1 = drone3.getClusterCenter(0);
+    tuple<int,int> d3_center2 = drone3.getClusterCenter(1);
+    tuple<int,int> d3_center3 = drone3.getClusterCenter(2);
+    cout << "3) If you use 3 drone(s), the total route will be " << drone3.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d3_center1) << "," << get<1>(d3_center1) << "], serving " << drone3.getIndividualClusterSet().at(0).size() - 1<< " locations, route is " << drone3.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d3_center2) << "," << get<1>(d3_center2) << "], serving " << drone3.getIndividualClusterSet().at(1).size()  -1 << " locations, route is " << drone3.getClusterDistances().at(1) << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at ["<< get<0>(d3_center3) << "," << get<1>(d3_center3) << "], serving " << drone3.getIndividualClusterSet().at(2).size()  -1<< " locations, route is " << drone3.getClusterDistances().at(2) << " meters" << endl;
 
     drone4.kMeansClustering();
-        cout << "clear" << endl;
-	
-    cout << "1) If you use 4 drone(s), the total route will be " << drone4.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(0).size() << " locations, route is " << drone4.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(1).size() << " locations, route is " << drone4.getClusterDistances().at(1)-1 << " meters" << endl;
-    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(2).size() << " locations, route is " << drone4.getClusterDistances().at(2)-1 << " meters" << endl;
-    cout << "    iV.  Landing Pad 4 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(3).size() << " locations, route is " << drone4.getClusterDistances().at(3)-1 << " meters" << endl;
+	tuple<int,int> d4_center1 = drone4.getClusterCenter(0);
+    tuple<int,int> d4_center2 = drone4.getClusterCenter(1);
+    tuple<int,int> d4_center3 = drone4.getClusterCenter(2);
+    tuple<int,int> d4_center4 = drone4.getClusterCenter(3);
+    cout << "4) If you use 4 drone(s), the total route will be " << drone4.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d4_center1) << "," << get<1>(d4_center1) << "], serving " << drone4.getIndividualClusterSet().at(0).size() -1<< " locations, route is " << drone4.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d4_center2) << "," << get<1>(d4_center2) << "], serving " << drone4.getIndividualClusterSet().at(1).size() -1<< " locations, route is " << drone4.getClusterDistances().at(1) << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at ["<< get<0>(d4_center3) << "," << get<1>(d4_center3) << "], serving " << drone4.getIndividualClusterSet().at(2).size() -1<< " locations, route is " << drone4.getClusterDistances().at(2) << " meters" << endl;
+    cout << "    iV.  Landing Pad 4 should be at ["<< get<0>(d4_center4) << "," << get<1>(d4_center4) << "], serving " << drone4.getIndividualClusterSet().at(3).size() -1<< " locations, route is " << drone4.getClusterDistances().at(3) << " meters" << endl;
         
         // cout << "		" << distance << endl;
 	double BSF = distance;
