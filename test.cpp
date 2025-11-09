@@ -223,8 +223,11 @@ int main() {
     // double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
 
 	// prints to UI
+    tuple<double,double> center = drone1.getClusterCenter(0);
+    cout << "Landing Pad 1 should be at (" << get<0>(center) << ", " << get<1>(center) << ") ..." << endl;
+
 	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getClusterDistances().at(0) << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
 
     drone2.kMeansClustering();
         cout << "clear" << endl;
