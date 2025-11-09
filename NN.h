@@ -400,7 +400,7 @@ void k_means::nearest_neighbor_distance(vector<vector<tuple<int,double,double>>>
 }
 
 void k_means::modified_nearest_neighbor_distance(vector<vector<tuple<int,double,double>>> IndividualClusters) {
-    int p = 0.10;
+    double p = 0.10;
     double total_distance_all_clusters = 0.0;
     vector<vector<int>> tempRoute;
     clusterDistances.clear();
@@ -448,7 +448,7 @@ void k_means::modified_nearest_neighbor_distance(vector<vector<tuple<int,double,
 
             if(second_best_tree != -1 && ((double)rand() / RAND_MAX)< p){
                 next_tree = second_best_tree;
-                cluster_distance += second_best_tree;
+                cluster_distance += secondBestDist;
             } else {
                 cluster_distance += bestDist;
             }
