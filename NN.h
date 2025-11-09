@@ -58,7 +58,7 @@ vector<double> k_means::getClusterDistances() {
 double k_means::getSumOfDistances() {
     double sum = 0;
     for(int i = 0; i < clusterDistances.size(); i++) {
-        sum += clusterDistances.at(0);
+        sum += clusterDistances.at(i);
     }
     return sum;
 }
