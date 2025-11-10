@@ -76,7 +76,8 @@ double normalize(string normalizeInput) {
 }
 
 int main() {
-    
+    cout << fixed << setprecision(1);
+
 	// variables initialization	
 	string inputData;
 	string filename;
@@ -216,42 +217,118 @@ int main() {
     cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
     
     drone1.kMeansClustering();
-    cout << "clear" << endl;
+    drone1.nearest_neighbor_distance(drone1.getIndividualClusterSet());
+    double BSF = drone1.getSumOfDistances();
 
+    auto start_time = chrono::steady_clock::now();
+    auto end_time = start_time + chrono::minutes(1);
+
+    while (chrono::steady_clock::now() < end_time) {
+        drone1.modified_nearest_neighbor_distance(drone1.getIndividualClusterSet());
+
+        double currentDistance = drone1.getSumOfDistances();
+        if (currentDistance < BSF) {
+            BSF = currentDistance; // update best-so-far
+        }
+    }
+    
+    cout << "Best-so-far (after 1 minute) distance: " << BSF << " meters" << endl;
 
     //calculate distances with 1,2,3,4 drones
-    // double drone1_distance = round(drone1.nearest_neighbor_distance()*10)/10;
+    // double drone1_distance = round(drone1.n earest_neighbor_distance()*10)/10;
 
 	// prints to UI
+    tuple<int,int> center1 = drone1.getClusterCenter(0);
+
 	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getClusterDistances().at(0) << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(center1) << "," << get<1>(center1) << "], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
+
 
     drone2.kMeansClustering();
-        cout << "clear" << endl;
+    drone2.nearest_neighbor_distance(drone2.getIndividualClusterSet());
+    double BSF2 = drone2.getSumOfDistances();
+    auto start_time2 = chrono::steady_clock::now();
+    auto end_time2 = start_time2 + chrono::minutes(1);
 
-    cout << "1) If you use 2 drone(s), the total route will be " << drone2.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(0).size() << " locations, route is " << drone2.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone2.getIndividualClusterSet().at(1).size() << " locations, route is " << drone2.getClusterDistances().at(1)-1 << " meters" << endl;
+    while (chrono::steady_clock::now() < end_time2) {
+        drone2.modified_nearest_neighbor_distance(drone2.getIndividualClusterSet());
+
+        double currentDistance = drone2.getSumOfDistances();
+        if (currentDistance < BSF2) {
+            BSF2 = currentDistance; // update best-so-far
+        }
+    }
     
+    cout << "D2 Best-so-far (after 1 minute) distance: " << BSF2 << " meters" << endl;
+
+
+
+    tuple<int,int> d2_center1 = drone2.getClusterCenter(0);
+    tuple<int,int> d2_center2 = drone2.getClusterCenter(1);
+    cout << "2) If you use 2 drone(s), the total route will be " << drone2.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d2_center1) << "," << get<1>(d2_center1) << "], serving " << drone2.getIndividualClusterSet().at(0).size() - 1 << " locations, route is " << drone2.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d2_center2) << "," << get<1>(d2_center2) << "], serving " << drone2.getIndividualClusterSet().at(1).size() - 1<< " locations, route is " << drone2.getClusterDistances().at(1) << " meters" << endl;
+    
+
     drone3.kMeansClustering();
-        cout << "clear" << endl;
+    drone3.nearest_neighbor_distance(drone3.getIndividualClusterSet());
+    double BSF3 = drone3.getSumOfDistances();
+    auto start_time3 = chrono::steady_clock::now();
+    auto end_time3 = start_time3 + chrono::minutes(1);
 
-    cout << "1) If you use 3 drone(s), the total route will be " << drone3.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(0).size() << " locations, route is " << drone3.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(1).size() << " locations, route is " << drone3.getClusterDistances().at(1)-1 << " meters" << endl;
-    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone3.getIndividualClusterSet().at(2).size() << " locations, route is " << drone3.getClusterDistances().at(2)-1 << " meters" << endl;
+    while (chrono::steady_clock::now() < end_time3) {
+        drone3.modified_nearest_neighbor_distance(drone3.getIndividualClusterSet());
 
+        double currentDistance = drone3.getSumOfDistances();
+        if (currentDistance < BSF3) {
+            BSF3 = currentDistance; // update best-so-far
+        }
+    }
+    
+    cout << "D3 Best-so-far (after 1 minute) distance: " << BSF3 << " meters" << endl;
+    
+
+
+    tuple<int,int> d3_center1 = drone3.getClusterCenter(0);
+    tuple<int,int> d3_center2 = drone3.getClusterCenter(1);
+    tuple<int,int> d3_center3 = drone3.getClusterCenter(2);
+    cout << "3) If you use 3 drone(s), the total route will be " << drone3.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d3_center1) << "," << get<1>(d3_center1) << "], serving " << drone3.getIndividualClusterSet().at(0).size() - 1<< " locations, route is " << drone3.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d3_center2) << "," << get<1>(d3_center2) << "], serving " << drone3.getIndividualClusterSet().at(1).size()  -1 << " locations, route is " << drone3.getClusterDistances().at(1) << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at ["<< get<0>(d3_center3) << "," << get<1>(d3_center3) << "], serving " << drone3.getIndividualClusterSet().at(2).size()  -1<< " locations, route is " << drone3.getClusterDistances().at(2) << " meters" << endl;
+
+    
     drone4.kMeansClustering();
-        cout << "clear" << endl;
-	
-    cout << "1) If you use 4 drone(s), the total route will be " << drone4.getSumOfDistances() << " meters" << endl;
-	cout << "    i.   Landing Pad 1 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(0).size() << " locations, route is " << drone4.getClusterDistances().at(0)-1 << " meters" << endl;
-    cout << "    ii.  Landing Pad 2 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(1).size() << " locations, route is " << drone4.getClusterDistances().at(1)-1 << " meters" << endl;
-    cout << "    iii. Landing Pad 3 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(2).size() << " locations, route is " << drone4.getClusterDistances().at(2)-1 << " meters" << endl;
-    cout << "    iv.  Landing Pad 4 should be at [cooridinates], serving " << drone4.getIndividualClusterSet().at(3).size() << " locations, route is " << drone4.getClusterDistances().at(3)-1 << " meters" << endl;
+    drone4.nearest_neighbor_distance(drone4.getIndividualClusterSet());
+    double BSF4 = drone4.getSumOfDistances();
+    auto start_time4 = chrono::steady_clock::now();
+    auto end_time4 = start_time4 + chrono::minutes(1);
+
+    while (chrono::steady_clock::now() < end_time4) {
+        drone4.modified_nearest_neighbor_distance(drone4.getIndividualClusterSet());
+
+        double currentDistance = drone4.getSumOfDistances();
+        if (currentDistance < BSF4) {
+            BSF4 = currentDistance; // update best-so-far
+        }
+    }
+    
+    cout << "D4 Best-so-far (after 1 minute) distance: " << BSF4 << " meters" << endl;
+
+
+
+	tuple<int,int> d4_center1 = drone4.getClusterCenter(0);
+    tuple<int,int> d4_center2 = drone4.getClusterCenter(1);
+    tuple<int,int> d4_center3 = drone4.getClusterCenter(2);
+    tuple<int,int> d4_center4 = drone4.getClusterCenter(3);
+    cout << "4) If you use 4 drone(s), the total route will be " << drone4.getSumOfDistances() << " meters" << endl;
+	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(d4_center1) << "," << get<1>(d4_center1) << "], serving " << drone4.getIndividualClusterSet().at(0).size() -1<< " locations, route is " << drone4.getClusterDistances().at(0) << " meters" << endl;
+    cout << "    ii.  Landing Pad 2 should be at ["<< get<0>(d4_center2) << "," << get<1>(d4_center2) << "], serving " << drone4.getIndividualClusterSet().at(1).size() -1<< " locations, route is " << drone4.getClusterDistances().at(1) << " meters" << endl;
+    cout << "    iii. Landing Pad 3 should be at ["<< get<0>(d4_center3) << "," << get<1>(d4_center3) << "], serving " << drone4.getIndividualClusterSet().at(2).size() -1<< " locations, route is " << drone4.getClusterDistances().at(2) << " meters" << endl;
+    cout << "    iV.  Landing Pad 4 should be at ["<< get<0>(d4_center4) << "," << get<1>(d4_center4) << "], serving " << drone4.getIndividualClusterSet().at(3).size() -1<< " locations, route is " << drone4.getClusterDistances().at(3) << " meters" << endl;
         
         // cout << "		" << distance << endl;
-	double BSF = distance;
+	//double BSF = distance;
 	string fileNameAdjusted = " ";;
     
 	cin.ignore();
