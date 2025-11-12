@@ -45,22 +45,22 @@ public:
 
 	double scale = 2; ///< scales the entire plot (including adjusting the precision)
 	double padding = 10;
-	double lineWidth = 1.5, precision = 100;
+	double lineWidth = 3, precision = 100;
 	double markerSize = 3.25;
 	double tickH = 4, tickV = 4;
 	// Text
-	double labelSize = 55, valueSize = 50, titleSize = 60;
+	double labelSize = 55, valueSize = 30, titleSize = 60;
 	double fontAspectRatio = 1; ///< scales size estimates, if using a particularly wide font
 	double textPadding = 5, titlePadding = 15, lineHeight = 1.2;
 	// Fills
-	double fillOpacity = 0.28, dotOpacity = 0.5;
+	double fillOpacity = 1, dotOpacity = 1;
 	double hatchWidth = 1, hatchSpacing = 3;
 	double animation = 2; ///< Animation duration
 
 	std::string scriptHref = "", scriptSrc = "";
 	std::string cssPrefix = "", cssSuffix = "";
-	std::vector<std::string> colours = {"#0073E6", "#CC0000", "#00B300", "#806600", "#E69900", "#CC00CC"};
-	std::vector<std::vector<double>> dashes = {{}, {1.2, 1.2}, {2.8, 1.6}, {5, 4}, {4, 1, 1, 1, 1, 1}, {10, 3}, {4, 2, 1, 2}};
+	std::vector<std::string> colours = {"#0073E6", "#CC0000", "#00B300", "#E69900", "#0073E6", "#CC00CC"};
+	std::vector<std::vector<double>> dashes = {{}, {}, {}, {}, {}, {}, {}};
 	/// SVG literals for the markers.  These should be centered on `(0, 0)` and look correct next to a filled circle of radius 1.  They will be given both a stroke and fill-class, so they should specify `fill="none"`/`stroke="none"` if fill/stroke is not wanted.
 	std::vector<std::string> markers = {
 		"<circle cx=\"0\" cy=\"0\" r=\"1\" stroke=\"none\"/>",

@@ -104,8 +104,11 @@ int main() {
     // more variable initialization
 	string xInput, yInput;
 	double highestRange = 0;
+    double lowestRange = 0;
 	double biggestX = 0.0;
 	double biggestY = 0.0;
+    double lowestX = 0;
+    double lowestY = 0;
 
     // reading input data from file
     while(!inFS.fail()) {
@@ -120,12 +123,13 @@ int main() {
 
             // gets max values for axes range
 			if (biggestX < normalizeXInput)
-
 				biggestX = normalizeXInput;
-
 			if (biggestY < normalizeYInput)
-
 				biggestY = normalizeYInput;
+            if (lowestX > normalizeXInput)
+				lowestX = normalizeXInput;
+			if (lowestY > normalizeYInput)
+				lowestY = normalizeYInput;
 
             xCoords.push_back(normalizeXInput);
 			yCoords.push_back(normalizeYInput);
@@ -134,18 +138,19 @@ int main() {
     }
 
     // decides which is larger to create a square plot
-	if (biggestX > biggestY)
 
-		highestRange = biggestX;
-
-	else 
-
-		highestRange = biggestY;
-
-    // to do ticks of 10 for graph display
-	if ((int)highestRange % 10 != 0)
-
-		highestRange += 10 - ((int)highestRange % 10);
+	if ((int)biggestX % 10 != 0)
+		biggestX += 10 - ((int)biggestX % 10);
+    if ((int)biggestY % 10 != 0)
+		biggestY += 10 - ((int)biggestY % 10);
+    if ((int)lowestX % 10 < 0)
+		lowestX -= 10 + (((int)lowestX) % 10);
+    else
+        lowestX -= ((int)lowestX % 10);
+    if ((int)lowestY % 10 < 0)
+		lowestY -= 10 + (((int)lowestY) % 10);
+    else
+        lowestY -= ((int)lowestY % 10);
 
 	inFS.close();
 
@@ -217,14 +222,14 @@ int main() {
     cout << "There are " << drone1.get_size() << " nodes: Solution will be available by " << Hour << ":" << min_str << "" << amPM << endl;
     
     drone1.kMeansClustering();
-    drone1.nearest_neighbor_distance(drone1.getIndividualClusterSet());
+    drone1.nearest_neighbor_distance();
     double BSF = drone1.getSumOfDistances();
 
     auto start_time = chrono::steady_clock::now();
-    auto end_time = start_time + chrono::minutes(1);
+    auto end_time = start_time + chrono::seconds(4);
 
     while (chrono::steady_clock::now() < end_time) {
-        drone1.modified_nearest_neighbor_distance(drone1.getIndividualClusterSet());
+        drone1.modified_nearest_neighbor_distance();
 
         double currentDistance = drone1.getSumOfDistances();
         if (currentDistance < BSF) {
@@ -245,13 +250,13 @@ int main() {
 
 
     drone2.kMeansClustering();
-    drone2.nearest_neighbor_distance(drone2.getIndividualClusterSet());
+    drone2.nearest_neighbor_distance();
     double BSF2 = drone2.getSumOfDistances();
     auto start_time2 = chrono::steady_clock::now();
-    auto end_time2 = start_time2 + chrono::minutes(1);
+    auto end_time2 = start_time2 + chrono::seconds(4);
 
     while (chrono::steady_clock::now() < end_time2) {
-        drone2.modified_nearest_neighbor_distance(drone2.getIndividualClusterSet());
+        drone2.modified_nearest_neighbor_distance();
 
         double currentDistance = drone2.getSumOfDistances();
         if (currentDistance < BSF2) {
@@ -271,13 +276,13 @@ int main() {
     
 
     drone3.kMeansClustering();
-    drone3.nearest_neighbor_distance(drone3.getIndividualClusterSet());
+    drone3.nearest_neighbor_distance();
     double BSF3 = drone3.getSumOfDistances();
     auto start_time3 = chrono::steady_clock::now();
-    auto end_time3 = start_time3 + chrono::minutes(1);
+    auto end_time3 = start_time3 + chrono::seconds(4);
 
     while (chrono::steady_clock::now() < end_time3) {
-        drone3.modified_nearest_neighbor_distance(drone3.getIndividualClusterSet());
+        drone3.modified_nearest_neighbor_distance();
 
         double currentDistance = drone3.getSumOfDistances();
         if (currentDistance < BSF3) {
@@ -299,13 +304,13 @@ int main() {
 
     
     drone4.kMeansClustering();
-    drone4.nearest_neighbor_distance(drone4.getIndividualClusterSet());
+    drone4.nearest_neighbor_distance();
     double BSF4 = drone4.getSumOfDistances();
     auto start_time4 = chrono::steady_clock::now();
-    auto end_time4 = start_time4 + chrono::minutes(1);
+    auto end_time4 = start_time4 + chrono::seconds(4);
 
     while (chrono::steady_clock::now() < end_time4) {
-        drone4.modified_nearest_neighbor_distance(drone4.getIndividualClusterSet());
+        drone4.modified_nearest_neighbor_distance();
 
         double currentDistance = drone4.getSumOfDistances();
         if (currentDistance < BSF4) {
@@ -368,16 +373,20 @@ int main() {
 	// drone1.write_route_to_file(outputFilename);	
 
     // graph plotting process
-    signalsmith::plot::Plot2D plot(1920, 1920);
+    double sumOfX = abs(lowestX) + abs(biggestX);
+    double sumOfY = abs(lowestY) + abs(biggestY);
+    int scaleValue = max(1920/sumOfX,1920/sumOfY);        //change to 480 for Almond9832 due to photo becoming really big
+    signalsmith::plot::Plot2D plot(sumOfX*scaleValue, sumOfY*scaleValue);
 	plot.x.label("X-Axis");
 	plot.y.label("Y-Axis");
 	plot.x.major(0);
 	plot.y.major(0);
 
-	for(int i = 0; i <= highestRange; i += 10) {
-
-		plot.x.minor(i);
+	for(int i = lowestY; i <= biggestY; i += 10) {
 		plot.y.minor(i);
+	}
+    for(int i = lowestX; i <= biggestX; i += 10) {
+		plot.x.minor(i);
 	}
     vector<vector<tuple<int,double,double>>> route;
     if(numOfDrones == 1) {
@@ -402,6 +411,7 @@ int main() {
         vector<tuple<int,double,double>> currRoute = route.at(i);
         tuple<int,double,double> landingZoneIndex = currRoute.at(0);
         auto &currline = plot.line();
+        scatter.dot(get<1>(landingZoneIndex),get<2>(landingZoneIndex),9,1);
 
         currline.add(get<1>(landingZoneIndex),get<2>(landingZoneIndex));
         currline.marker(get<1>(landingZoneIndex),get<2>(landingZoneIndex),0);
@@ -415,7 +425,6 @@ int main() {
 
         currline.add(get<1>(landingZoneIndex),get<2>(landingZoneIndex));
         
-        scatter.dot(get<1>(landingZoneIndex),get<2>(landingZoneIndex),6,1);
         
         
     }
