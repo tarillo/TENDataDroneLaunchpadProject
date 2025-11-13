@@ -20,6 +20,7 @@ class k_means{
         vector<vector<int>> clusterRoute; 
         vector<double> clusterDistances;
         vector<vector<tuple<int,double,double>>> IndividualClusters;
+        vector<double> bestClusterDistances;
         
    public:
    vector<double> getClusterDistances();
@@ -60,11 +61,7 @@ vector<double> k_means::getClusterDistances() {
 }
 
 double k_means::getSumOfDistances() {
-    double sum = 0;
-    for(int i = 0; i < clusterDistances.size(); i++) {
-        sum += clusterDistances.at(i);
-    }
-    return sum;
+    return bestRouteDistance;
 }
 
 vector<vector<tuple<int,double,double>>> k_means::getIndividualClusterSet() {
@@ -401,6 +398,7 @@ void k_means::nearest_neighbor_distance() {
         bestRouteDistance = total_distance_all_clusters;
         clusterRoute = tempRoute;
         IndividualClusters = newlyFormedIndividualClusters;
+        bestClusterDistances = clusterDistances;
     }
 }
 
@@ -481,6 +479,7 @@ void k_means::modified_nearest_neighbor_distance() {
         bestRouteDistance = total_distance_all_clusters;
         clusterRoute = tempRoute;
         IndividualClusters = newlyFormedIndividualClusters;
+        bestClusterDistances = clusterDistances;
     }
 }
 

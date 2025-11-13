@@ -225,17 +225,17 @@ int main() {
     drone1.nearest_neighbor_distance();
     double BSF = drone1.getSumOfDistances();
 
-    auto start_time = chrono::steady_clock::now();
-    auto end_time = start_time + chrono::seconds(4);
+    // auto start_time = chrono::steady_clock::now();
+    // auto end_time = start_time + chrono::minutes(1);
 
-    while (chrono::steady_clock::now() < end_time) {
-        drone1.modified_nearest_neighbor_distance();
+    // while (chrono::steady_clock::now() < end_time) {
+    //     drone1.modified_nearest_neighbor_distance();
 
-        double currentDistance = drone1.getSumOfDistances();
-        if (currentDistance < BSF) {
-            BSF = currentDistance; // update best-so-far
-        }
-    }
+    //     double currentDistance = drone1.getSumOfDistances();
+    //     if (currentDistance < BSF) {
+    //         BSF = currentDistance; // update best-so-far
+    //     }
+    // }
     
     cout << "Best-so-far (after 1 minute) distance: " << BSF << " meters" << endl;
 
@@ -245,24 +245,24 @@ int main() {
 	// prints to UI
     tuple<int,int> center1 = drone1.getClusterCenter(0);
 
-	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getClusterDistances().at(0) << " meters" << endl;
+	cout << "1) If you use 1 drone(s), the total route will be " << drone1.getSumOfDistances() << " meters" << endl;
 	cout << "    i.   Landing Pad 1 should be at ["<< get<0>(center1) << "," << get<1>(center1) << "], serving " << drone1.get_size() << " locations, route is " << drone1.getClusterDistances().at(0) << " meters" << endl;
 
 
     drone2.kMeansClustering();
     drone2.nearest_neighbor_distance();
     double BSF2 = drone2.getSumOfDistances();
-    auto start_time2 = chrono::steady_clock::now();
-    auto end_time2 = start_time2 + chrono::seconds(4);
+    // auto start_time2 = chrono::steady_clock::now();
+    // auto end_time2 = start_time2 + chrono::minutes(1);
 
-    while (chrono::steady_clock::now() < end_time2) {
-        drone2.modified_nearest_neighbor_distance();
+    // while (chrono::steady_clock::now() < end_time2) {
+    //     drone2.modified_nearest_neighbor_distance();
 
-        double currentDistance = drone2.getSumOfDistances();
-        if (currentDistance < BSF2) {
-            BSF2 = currentDistance; // update best-so-far
-        }
-    }
+    //     double currentDistance = drone2.getSumOfDistances();
+    //     if (currentDistance < BSF2) {
+    //         BSF2 = currentDistance; // update best-so-far
+    //     }
+    // }
     
     cout << "D2 Best-so-far (after 1 minute) distance: " << BSF2 << " meters" << endl;
 
@@ -278,17 +278,17 @@ int main() {
     drone3.kMeansClustering();
     drone3.nearest_neighbor_distance();
     double BSF3 = drone3.getSumOfDistances();
-    auto start_time3 = chrono::steady_clock::now();
-    auto end_time3 = start_time3 + chrono::seconds(4);
+    // auto start_time3 = chrono::steady_clock::now();
+    // auto end_time3 = start_time3 + chrono::minutes(1);
 
-    while (chrono::steady_clock::now() < end_time3) {
-        drone3.modified_nearest_neighbor_distance();
+    // while (chrono::steady_clock::now() < end_time3) {
+    //     drone3.modified_nearest_neighbor_distance();
 
-        double currentDistance = drone3.getSumOfDistances();
-        if (currentDistance < BSF3) {
-            BSF3 = currentDistance; // update best-so-far
-        }
-    }
+    //     double currentDistance = drone3.getSumOfDistances();
+    //     if (currentDistance < BSF3) {
+    //         BSF3 = currentDistance; // update best-so-far
+    //     }
+    // }
     
     cout << "D3 Best-so-far (after 1 minute) distance: " << BSF3 << " meters" << endl;
     
@@ -306,17 +306,17 @@ int main() {
     drone4.kMeansClustering();
     drone4.nearest_neighbor_distance();
     double BSF4 = drone4.getSumOfDistances();
-    auto start_time4 = chrono::steady_clock::now();
-    auto end_time4 = start_time4 + chrono::seconds(4);
+    // auto start_time4 = chrono::steady_clock::now();
+    // auto end_time4 = start_time4 + chrono::minutes(1);
 
-    while (chrono::steady_clock::now() < end_time4) {
-        drone4.modified_nearest_neighbor_distance();
+    // while (chrono::steady_clock::now() < end_time4) {
+    //     drone4.modified_nearest_neighbor_distance();
 
-        double currentDistance = drone4.getSumOfDistances();
-        if (currentDistance < BSF4) {
-            BSF4 = currentDistance; // update best-so-far
-        }
-    }
+    //     double currentDistance = drone4.getSumOfDistances();
+    //     if (currentDistance < BSF4) {
+    //         BSF4 = currentDistance; // update best-so-far
+    //     }
+    // }
     
     cout << "D4 Best-so-far (after 1 minute) distance: " << BSF4 << " meters" << endl;
 
