@@ -24,6 +24,7 @@ class k_means{
         
    public:
    vector<double> getClusterDistances();
+   vector<double> getBestClusterDistances();
    double getSumOfDistances();
     k_means() : num_points(0), k(0), numIterations(10) {}
     k_means(int num_drones) : num_points(0), k(num_drones), numIterations(10), IndividualClusters(k){}
@@ -62,6 +63,9 @@ vector<double> k_means::getClusterDistances() {
 
 double k_means::getSumOfDistances() {
     return bestRouteDistance;
+}
+vector<double> k_means::getBestClusterDistances() {
+    return bestClusterDistances;
 }
 
 vector<vector<tuple<int,double,double>>> k_means::getIndividualClusterSet() {
