@@ -218,7 +218,7 @@ void k_means::load_data(const string &filename) {
         ss >> x >> y;
         coordinates[num_points][0] = x;
         coordinates[num_points][1] = y;
-        
+        num_points++;
         //Error check : valid number of locations
         if(num_points > 4096) {
 
@@ -226,7 +226,7 @@ void k_means::load_data(const string &filename) {
             exit(1);
         }
 
-        num_points++;
+        
     }
 
     dataPoints.close();  
@@ -248,7 +248,7 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
     for (int c = 0; c < chosenNumClusters; ++c) {         // iterate over the vector
         ostringstream oss;
         oss.precision(0);
-        oss << fixed << clusterDistances[c];
+        oss << fixed << bestClusterDistances[c];
         string fileName = inputFilename + "_" + to_string(c+1) + "_SOLUTION_" + oss.str() + ".txt"; 
         ofstream fout(fileName);
         if (!fout) {
@@ -350,9 +350,9 @@ void k_means::nearest_neighbor_distance() {
 
         if(cluster_size <= 1) continue;
 
-        bool visited[4096] = {false};    
+        bool visited[cluster.size()] = {false};    
         double cluster_distance = 0.0;
-        int cluster_route[4096];
+        int cluster_route[cluster.size()];
 
         // Start at the cluster center (first element)
         int current_tree = 0;
@@ -419,9 +419,9 @@ void k_means::modified_nearest_neighbor_distance() {
 
         if(cluster_size <= 1) continue;
 
-        bool visited[4096] = {false};    
+        bool visited[cluster.size()] = {false};    
         double cluster_distance = 0.0;
-        int cluster_route[4096];
+        int cluster_route[cluster.size()];
 
         // Start at the cluster center (first element)
         int current_tree = 0;

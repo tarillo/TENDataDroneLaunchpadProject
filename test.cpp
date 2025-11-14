@@ -94,8 +94,10 @@ int main() {
 	inFS.open(filename);
 
 	if (!inFS.is_open()) {
-
-		cout << "Could not open file " << filename << endl;
+        if(filename.find(".txt") == string::npos) 
+            cout << "Error: Invalid file format: Must be a .txt file" << endl;
+        else
+		    cout << "Error with opening file: " << filename << endl;
 		return 1;
 	}
 
