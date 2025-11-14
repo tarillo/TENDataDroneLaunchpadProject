@@ -49,7 +49,7 @@ public:
 	double markerSize = 3.25;
 	double tickH = 4, tickV = 4;
 	// Text
-	double labelSize = 55, valueSize = 30, titleSize = 60;
+	double labelSize = 60, valueSize = 50, titleSize = 60;
 	double fontAspectRatio = 1; ///< scales size estimates, if using a particularly wide font
 	double textPadding = 5, titlePadding = 15, lineHeight = 1.2;
 	// Fills
