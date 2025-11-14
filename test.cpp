@@ -238,7 +238,7 @@ int main() {
             BSF = currentDistance; // update best-so-far
         }
     }
-    
+    cout<< "OF = "  << drone1.getOF() << endl;
     cout << "Best-so-far (after 1 minute) distance: " << BSF << " meters" << endl;
 
     //calculate distances with 1,2,3,4 drones
@@ -265,7 +265,7 @@ int main() {
             BSF2 = currentDistance; // update best-so-far
         }
     }
-    
+    cout<< "OF = "  << drone2.getOF() << endl;
     cout << "D2 Best-so-far (after 1 minute) distance: " << BSF2 << " meters" << endl;
 
 
@@ -291,7 +291,7 @@ int main() {
             BSF3 = currentDistance; // update best-so-far
         }
     }
-    
+    cout<< "OF = "  << drone3.getOF() << endl;
     cout << "D3 Best-so-far (after 1 minute) distance: " << BSF3 << " meters" << endl;
     
 
@@ -319,7 +319,7 @@ int main() {
             BSF4 = currentDistance; // update best-so-far
         }
     }
-    
+    cout<< "OF = "  << drone4.getOF() << endl;
     cout << "D4 Best-so-far (after 1 minute) distance: " << BSF4 << " meters" << endl;
 
 

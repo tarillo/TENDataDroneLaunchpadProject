@@ -16,7 +16,7 @@ class k_means{
         int route[4096];
         double bestRouteDistance = 1000000;
         int bestCluster[4096];
-        double OF;
+        double OF = 10000000;
         vector<vector<int>> clusterRoute; 
         vector<double> clusterDistances;
         vector<vector<tuple<int,double,double>>> IndividualClusters;
@@ -36,12 +36,35 @@ class k_means{
     void nearest_neighbor_distance();
     void modified_nearest_neighbor_distance();
     //double modified_nearest_neighbor_distance(double p);
-    
+    double getOF() const { return OF; }
     void kMeansClustering();
     vector<vector<tuple<int,double,double>>> getIndividualClusterSet();
     tuple<int,int> getClusterCenter(int clusterIndex) const;
 
+    double ObjectiveFunction();
+
 };   
+
+double k_means::ObjectiveFunction() {
+    double total_OF = 0.0;
+
+    for(int c = 0; c < IndividualClusters.size(); c++){
+        if(IndividualClusters[c].empty()) continue;
+
+        double dist_x = get<1>(IndividualClusters[c][0]);
+        double dist_y = get<2>(IndividualClusters[c][0]);
+
+        for(int i = 1; i < IndividualClusters[c].size(); ++i)    {
+            double dx = get<1>(IndividualClusters[c][i]) - dist_x;
+            double dy = get<2>(IndividualClusters[c][i]) - dist_y;
+            
+            total_OF += (dx*dx + dy*dy);
+        }
+    }
+
+    return total_OF;
+    
+}
 
 tuple<int,int> k_means::getClusterCenter(int clusterIndex) const {
 
@@ -74,11 +97,7 @@ vector<vector<tuple<int,double,double>>> k_means::getIndividualClusterSet() {
 
 void k_means::kMeansClustering()    {
     srand(time(NULL));
-    
-    
-
     double bestDistanceOverall = 100000;
-    
     
     // number of times to run k means to get BEST clusters
     for(int l = 0; l < numIterations; ++l){
@@ -159,25 +178,22 @@ void k_means::kMeansClustering()    {
 
 
         } while(changed);
+
         nearest_neighbor_distance();
         if (bestRouteDistance < bestDistanceOverall) {
             bestDistanceOverall = bestRouteDistance;
         }  
+
+        double tempOF = ObjectiveFunction();
+        if (tempOF < OF) {
+            OF = tempOF;
+        }
     }
 
-    // for(int i = 0; i < num_points; ++i){
-    //     route[i] = bestCluster[i];
-    // }
-    
-    //need to fix. clusters was defined in loop above so it runs into issues here. Same thing with centers 
-    // double currentOF = 0.0;
-    
-    // for(int b = 0; b < num_points; b++){
-    //     int cIndex = clusters[b];
-    //     double dist_x = coordinates[b][0] - centers[cIndex][0];
-    //     double dist_y = coordinates[b][1] - centers[cIndex][1];
-    //     currentOF = dist_x*dist_x + dist_y*dist_y;
-    // }
+    for(int i = 0; i < num_points; ++i){
+        route[i] = bestCluster[i];
+    }
+
 }
 
 
@@ -350,7 +366,7 @@ void k_means::nearest_neighbor_distance() {
 
         if(cluster_size <= 1) continue;
 
-        bool visited[cluster.size()] = {false};    
+        bool visited[cluster.size()] = {false};
         double cluster_distance = 0.0;
         int cluster_route[cluster.size()];
 
@@ -422,6 +438,7 @@ void k_means::modified_nearest_neighbor_distance() {
         bool visited[cluster.size()] = {false};    
         double cluster_distance = 0.0;
         int cluster_route[cluster.size()];
+
 
         // Start at the cluster center (first element)
         int current_tree = 0;
