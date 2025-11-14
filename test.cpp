@@ -360,6 +360,13 @@ int main() {
 
    cout << "Enter a choice" << endl;
    cin >> numOfDrones;
+
+   // ERROR HANDLING: incorrect input of available number of drones
+   if (numOfDrones < 1 || numOfDrones > 4) {
+        cout << "Error: Invalid number of drones selected" << endl;
+        return 1;
+   }
+
 	ostringstream dist;
     fileNameAdjusted = filename.substr(0, filename.find('.'));
 
