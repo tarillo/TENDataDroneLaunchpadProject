@@ -272,7 +272,7 @@ void k_means::write_route_to_file(const string &inputFilename, int chosenNumClus
         continue;
         }
         for(int i = 1; i < clusterRoute[c].size() -1; ++i){
-            fout << clusterRoute[c][i] << endl;
+            fout << clusterRoute[c][i]+1<< endl;
         }
         fout.close();
         cout << fileName << ", ";
@@ -366,7 +366,7 @@ void k_means::nearest_neighbor_distance() {
 
         if(cluster_size <= 1) continue;
 
-        bool visited[cluster.size()] = {false};
+        vector<bool> visited(cluster_size, false);
         double cluster_distance = 0.0;
         int cluster_route[cluster.size()];
 
@@ -435,7 +435,7 @@ void k_means::modified_nearest_neighbor_distance() {
 
         if(cluster_size <= 1) continue;
 
-        bool visited[cluster.size()] = {false};    
+        vector<bool> visited(cluster_size, false);    
         double cluster_distance = 0.0;
         int cluster_route[cluster.size()];
 
