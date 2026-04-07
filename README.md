@@ -20,17 +20,18 @@ This project focuses on optimizing multi-drone route planning for a pheromone de
 Main Data Structure: Vectors / Nested Vectors of Tuples
 
       Vector (All Coordinates)
-      * xCoords (vector<double>)
-      * yCoords (vector<double>)
+         |__ xCoords (vector<double>)
+         |__ yCoords (vector<double>)
       
       Vector (Clusters per Drone Configuration)
-      * Cluster 1 (vector<tuple<index, x, y>>)
-      * Cluster 2 (vector<tuple<index, x, y>>)
-      * Cluster 3 (vector<tuple<index, x, y>>)
-      * Cluster 4 (vector<tuple<index, x, y>>)
+         |__ Cluster 1 (vector<tuple<index, x, y>>)
+         |__ Cluster 2 (vector<tuple<index, x, y>>)
+         |__ Cluster 3 (vector<tuple<index, x, y>>)
+         |__ Cluster 4 (vector<tuple<index, x, y>>)
       
       Vector (Routes per Cluster)
-      * Ordered sequence of nodes (route path)
-            * Start (Launch Pad)
-            * Intermediate Nodes
-            * Return to Start
+         |__ Route (ordered sequence of nodes)
+                |__ Start (Launch Pad)
+                |__ Intermediate Nodes
+                |__ Return to Start
+
